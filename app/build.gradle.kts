@@ -84,13 +84,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Coil
-    implementation(libs.coil.compose)
+    implementation(libs.coil3.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Retrofit
     implementation (libs.retrofit)
 
     // OkHttp
-    implementation(libs.okhttp)
+    implementation(libs.okhttp.v4120)
 
     // JSON Converter
     implementation (libs.converter.gson)

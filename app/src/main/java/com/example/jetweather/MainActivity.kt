@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,16 +34,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp(content: @Composable ()-> Unit){
     JetWeatherTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                content()
-            }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            content()
         }
     }
 }

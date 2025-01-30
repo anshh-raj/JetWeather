@@ -1,11 +1,9 @@
 package com.example.jetweather.screens.main
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,14 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -30,22 +23,15 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
-import com.example.jetweather.R
 import com.example.jetweather.data.DataOrException
-import com.example.jetweather.model.Daily
 import com.example.jetweather.model.Weather
+import com.example.jetweather.navigation.WeatherScreens
 import com.example.jetweather.utils.formatDate
-import com.example.jetweather.utils.formatDateTime
 import com.example.jetweather.utils.formatDecimals
 import com.example.jetweather.widgets.HumidityWindPressureRow
 import com.example.jetweather.widgets.SunsetSunriseRow
@@ -55,15 +41,23 @@ import com.example.jetweather.widgets.WeatherStateImage
 
 
 @Composable
-fun WeatherMainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel()){
+fun WeatherMainScreen(
+    navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
+    latitude: String?,
+    longitude: String?,
+    city: String?
+){
+
+    Log.d("Coordinate", "WeatherMainScreen: $latitude $longitude")
 
     val weatherData = produceState<DataOrException<Weather,Boolean,Exception>>(
         initialValue = DataOrException(loading = true)){
         value = mainViewModel.getWeatherData(
 //            lat = "28.7041",
 //            lon = "77.1025"
-            lat = "25.2425",
-            lon = "86.9842"
+            lat = latitude.toString(),
+            lon = longitude.toString()
         )
     }.value
 
@@ -71,20 +65,24 @@ fun WeatherMainScreen(navController: NavController, mainViewModel: MainViewModel
         CircularProgressIndicator()
     }
     else if (weatherData.data != null){
-        MainScaffold(weatherData.data!!, navController)
+        MainScaffold(weatherData.data!!, navController, city)
 
     }
 }
 
 @Composable
-fun MainScaffold(weather: Weather, navController: NavController) {
+fun MainScaffold(weather: Weather, navController: NavController, city: String?) {
 
     Scaffold(
         topBar = {
             WeatherAppBar(
+                city = city.toString(),
                 lat = weather.lat.toString(),
                 lon = weather.lon.toString(),
                 navController = navController,
+                onAddActionClicked = {
+                    navController.navigate(WeatherScreens.SearchScreen.name)
+                }
             ){
                 Log.d("TAG", "MainScaffold: ButtonClicked")
             }

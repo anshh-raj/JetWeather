@@ -7,9 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +30,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp(content: @Composable ()-> Unit){
-    JetWeatherTheme {
+//    JetWeatherTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -41,7 +38,7 @@ fun MyApp(content: @Composable ()-> Unit){
         ){
             content()
         }
-    }
+//    }
 }
 
 @Preview(showBackground = true)

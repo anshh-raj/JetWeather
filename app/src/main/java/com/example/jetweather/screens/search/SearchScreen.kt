@@ -101,6 +101,7 @@ fun SearchBar(
         CommonTextField(
             valueState = searchCity,
             placeholder= "City",
+            keyboardType = KeyboardType.Text,
             onAction = KeyboardActions {
                 if (!validLat || !validLon || !validCity) return@KeyboardActions
                 onSearch(searchCity.value.trim()+","+searchLatState.value.trim()+","+searchLonState.value.trim())

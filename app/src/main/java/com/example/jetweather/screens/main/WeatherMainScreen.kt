@@ -19,7 +19,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +36,7 @@ import androidx.navigation.NavController
 import com.example.jetweather.data.DataOrException
 import com.example.jetweather.model.Weather
 import com.example.jetweather.navigation.WeatherScreens
+import com.example.jetweather.screens.settings.SettingsViewModel
 import com.example.jetweather.utils.formatDate
 import com.example.jetweather.utils.formatDecimals
 import com.example.jetweather.widgets.HumidityWindPressureRow
@@ -44,34 +50,52 @@ import com.example.jetweather.widgets.WeatherStateImage
 fun WeatherMainScreen(
     navController: NavController,
     mainViewModel: MainViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     latitude: String?,
     longitude: String?,
     city: String?
 ){
+    val unitFromDB = settingsViewModel.unitList
+    if(unitFromDB.loading == false){
+        val unitFromDb = unitFromDB.data!!.collectAsState().value
 
-    Log.d("Coordinate", "WeatherMainScreen: $latitude $longitude")
+        var unit by remember {
+            mutableStateOf("metric")
+        }
 
-    val weatherData = produceState<DataOrException<Weather,Boolean,Exception>>(
-        initialValue = DataOrException(loading = true)){
-        value = mainViewModel.getWeatherData(
+        var isMetric by remember {
+            mutableStateOf(false)
+        }
+
+        unit = if (unitFromDb.isNotEmpty()) unitFromDb[0].unit.split(" ")[0].lowercase()
+        else "metric"
+        Log.d("unitt", "WeatherMainScreen: $unit")
+        isMetric = unit == "metric"
+        Log.d("Coordinate", "WeatherMainScreen: $latitude $longitude")
+
+        val weatherData = produceState<DataOrException<Weather,Boolean,Exception>>(
+            initialValue = DataOrException(loading = true)){
+            value = mainViewModel.getWeatherData(
 //            lat = "28.7041",
 //            lon = "77.1025"
-            lat = latitude.toString(),
-            lon = longitude.toString()
-        )
-    }.value
+                lat = latitude.toString(),
+                lon = longitude.toString(),
+                units = unit
+            )
+        }.value
 
-    if(weatherData.loading == true){
-        CircularProgressIndicator()
-    }
-    else if (weatherData.data != null){
-        MainScaffold(weatherData.data!!, navController, city)
+        if(weatherData.loading == true){
+            CircularProgressIndicator()
+        }
+        else if (weatherData.data != null){
+            MainScaffold(weatherData.data!!, navController, city, isMetric = isMetric)
 
+        }
     }
 }
 
 @Composable
-fun MainScaffold(weather: Weather, navController: NavController, city: String?) {
+fun MainScaffold(weather: Weather, navController: NavController, city: String?, isMetric: Boolean) {
 
     Scaffold(
         topBar = {
@@ -91,14 +115,14 @@ fun MainScaffold(weather: Weather, navController: NavController, city: String?) 
         Column(
             modifier = Modifier.padding(it)
         ) {
-            MainContent(data = weather)
+            MainContent(data = weather, isMetric = isMetric)
         }
     }
 
 }
 
 @Composable
-fun MainContent(data: Weather) {
+fun MainContent(data: Weather, isMetric: Boolean) {
     val ImageUrl = "https://openweathermap.org/img/wn/${data.daily[0].weather[0].icon}.png"
 
     Column(
@@ -139,7 +163,7 @@ fun MainContent(data: Weather) {
                 )
             }
         }
-        HumidityWindPressureRow(weather = data)
+        HumidityWindPressureRow(weather = data, isMetric = isMetric)
         HorizontalDivider()
         SunsetSunriseRow(weather = data)
         Text(

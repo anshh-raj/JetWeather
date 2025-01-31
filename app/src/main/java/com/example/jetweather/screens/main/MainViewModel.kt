@@ -9,11 +9,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
-    suspend fun getWeatherData(lat: String, lon:String):
+    suspend fun getWeatherData(lat: String, lon: String, units: String):
             DataOrException<Weather,Boolean,Exception>{
         return repository.getWeather(
             latitude = lat,
-            longitude = lon
+            longitude = lon,
+            units = units
         )
     }
 }

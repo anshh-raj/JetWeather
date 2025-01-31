@@ -7,10 +7,10 @@ import com.example.jetweather.network.WeatherApi
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(private val api: WeatherApi) {
-    suspend fun getWeather(latitude: String, longitude: String):
+    suspend fun getWeather(latitude: String, longitude: String, units: String):
             DataOrException<Weather, Boolean, Exception> {
         val response = try {
-            api.getWeather(latitude = latitude, longitude = longitude)
+            api.getWeather(latitude = latitude, longitude = longitude, units = units)
         }catch (exception: Exception){
             Log.d("ERRORP", "getWeather: $exception")
             return DataOrException(e = exception)

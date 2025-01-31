@@ -130,7 +130,7 @@ fun SunsetSunriseRow(weather: Weather) {
 }
 
 @Composable
-fun HumidityWindPressureRow(weather: Weather) {
+fun HumidityWindPressureRow(weather: Weather, isMetric: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,7 +173,7 @@ fun HumidityWindPressureRow(weather: Weather) {
                 modifier = Modifier.size(20.dp)
             )
             Text(
-                text = "${weather.daily[0].humidity} mph",
+                text = "${weather.daily[0].wind_speed} " + if (isMetric) "m/s" else "mph",
                 style = MaterialTheme.typography.titleSmall
             )
         }

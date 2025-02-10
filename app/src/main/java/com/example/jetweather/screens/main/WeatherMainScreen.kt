@@ -1,6 +1,8 @@
 package com.example.jetweather.screens.main
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,6 +57,10 @@ fun WeatherMainScreen(
     longitude: String?,
     city: String?
 ){
+    val activity = LocalActivity.current
+    BackHandler {
+        activity?.finish()
+    }
     val unitFromDB = settingsViewModel.unitList
     if(unitFromDB.loading == false){
         val unitFromDb = unitFromDB.data!!.collectAsState().value
